@@ -1,0 +1,12 @@
+$ ./appme --help           
+usage: appme [-h] [--role ROLE] [--year YEAR] [--dry_run] company friendly
+
+positional arguments:
+  company          what company one is applying for
+  friendly         a name you can use in the cover letter
+
+options:
+  -h, --help       show this help message and exit
+  --role, -r ROLE  title of position
+  --year, -y YEAR  what year the role is for, assumes for next year
+  --dry_run
