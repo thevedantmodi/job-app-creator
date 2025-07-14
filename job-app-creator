@@ -1,0 +1,88 @@
+!# /opt/homebrew/bin/python3
+import os
+import argparse
+import datetime
+import shutil
+import subprocess
+
+COMPANY_SENTINEL = "@@REPLACE@WITH@COMPANY@NAME@@"
+ROLE_SENTINEL = "@REPLACE@WITH@ROLE@@"
+
+
+def finish(company, role, year, application, letter_fname, dry_run):
+    print()
+    print("========================================")
+    if dry_run:
+        print("                 DRY RUN!               ")
+    print("          APPLICATION GENERATED         ")
+    print("========================================")
+    print(f" Company   : {company}")
+    print(f" Role      : {role}")
+    print(f" Year      : {year}")
+    print("----------------------------------------")
+    print(f" Application : {application}")
+    print(f" Letter      : {letter_fname}")
+    print("========================================")
+    print("        GOOD SKILL WITH YOUR APP!       ")
+    print("========================================")
+
+
+def main():
+    assert os.getcwd() == os.path.expanduser("~/job"), "Not in job directory"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("company", help="what company one is applying for", type=str)
+    parser.add_argument(
+        "friendly",
+        help="a name you can use in the cover letter",
+        type=str,
+        default=None,
+    )
+    parser.add_argument(
+        "--role", "-r", help="title of position", default="Software Engineer", type=str
+    )
+    parser.add_argument(
+        "--year",
+        "-y",
+        default=(datetime.datetime.now().year + 1),
+        help="what year the role is for, assumes for next year",
+    )
+    parser.add_argument("--dry_run", action="store_true", default=False)
+    args = parser.parse_args()
+    company = args.company
+    year = args.year
+    friendly = getattr(args, "friendly", company)
+    role = args.role
+    dry_run = args.dry_run
+
+    application = os.path.expanduser(f"~/job/{company}-{str(year)}")
+
+    letter = (
+        os.path.expanduser("~/job/.template/letter.tex"),
+        application,
+    )
+
+    letter_filename = os.path.join(application, "letter.tex")
+    if dry_run:
+        finish(company, role, year, application, letter_filename, dry_run)
+        return
+
+    os.mkdir(application)
+    shutil.copy(*letter)
+
+    letter_file = open(letter_filename, "r")
+    letter_data = letter_file.read()
+    letter_file.close()
+
+    new_letter_data = letter_data.replace(COMPANY_SENTINEL, friendly)
+    new_letter_data = new_letter_data.replace(ROLE_SENTINEL, role)
+
+    letter_file = open(letter_filename, "w")
+    letter_file.write(new_letter_data)
+    letter_file.close()
+    finish(company, role, year, application, letter_filename, dry_run)
+
+    subprocess.run(["code", application])
+
+
+if __name__ == "__main__":
+    main()
