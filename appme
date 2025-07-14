@@ -1,4 +1,4 @@
-!# /opt/homebrew/bin/python3
+#!/opt/homebrew/bin/python3
 import os
 import argparse
 import datetime
@@ -28,7 +28,6 @@ def finish(company, role, year, application, letter_fname, dry_run):
 
 
 def main():
-    assert os.getcwd() == os.path.expanduser("~/job"), "Not in job directory"
     parser = argparse.ArgumentParser()
     parser.add_argument("company", help="what company one is applying for", type=str)
     parser.add_argument(
@@ -53,6 +52,8 @@ def main():
     friendly = getattr(args, "friendly", company)
     role = args.role
     dry_run = args.dry_run
+
+    assert os.getcwd() == os.path.expanduser("~/job"), "Not in job directory"
 
     application = os.path.expanduser(f"~/job/{company}-{str(year)}")
 
