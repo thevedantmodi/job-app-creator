@@ -10,3 +10,11 @@ options:
   --role, -r ROLE  title of position
   --year, -y YEAR  what year the role is for, assumes for next year
   --dry_run
+
+
+notes:
+
+must use these sentinels in template, or fork the repo and change it...
+
+COMPANY_SENTINEL = "@@REPLACE@WITH@COMPANY@NAME@@"
+ROLE_SENTINEL = "@REPLACE@WITH@ROLE@@"
